@@ -1,13 +1,13 @@
 using System;
-using OneTimePassword.App.Contracts;
+using OneTimePassword.Contracts;
 
-namespace OneTimePassword.App.Domain
+namespace OneTimePassword.Domain
 {
-    public class OneTimePasswordVerifier : IPasswordVerifier
+    public class CredentialVerifier : ICredentialVerifier
     {
         private readonly IPasswordGenerator _passwordGenerator;
 
-        public OneTimePasswordVerifier(IPasswordGenerator passwordGenerator)
+        public CredentialVerifier(IPasswordGenerator passwordGenerator)
         {
             _passwordGenerator = passwordGenerator;
         }

@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using NUnit.Framework;
-using OneTimePassword.App.Contracts;
-using OneTimePassword.App.Domain;
+using OneTimePassword.Contracts;
+using OneTimePassword.Domain;
 
 namespace OneTimePassword.Tests.Functional
 {
@@ -11,7 +11,7 @@ namespace OneTimePassword.Tests.Functional
         private IExpiryProvider _expiryProvider;
         private IHashGenerator _hashGenerator;
         private IPasswordGenerator _passwordGenerator;
-        private IPasswordVerifier _passwordVerifier;
+        private ICredentialVerifier _credentialVerifier;
         private const string TestUserName = "TestUserName";
 
         [SetUp]
@@ -20,15 +20,15 @@ namespace OneTimePassword.Tests.Functional
             _keyProvider = new AppConfigKeyProvider();
             _expiryProvider = new AppConfigExpiryProvider();
             _hashGenerator = new HmacSha1HashGenerator();
-            _passwordGenerator = new OneTimePasswordGenerator(_keyProvider, _expiryProvider, _hashGenerator);
-            _passwordVerifier = new OneTimePasswordVerifier(_passwordGenerator);
+            _passwordGenerator = new TimeBasedPasswordGenerator(_keyProvider, _expiryProvider, _hashGenerator);
+            _credentialVerifier = new CredentialVerifier(_passwordGenerator);
         }
 
         [Test]
         public void GivenAGeneratedPassword_WhenVerifiedWithinExpiryPeriod_ThenReturnsTrue()
         {
             var password = _passwordGenerator.Generate(TestUserName);
-            var isVerified = _passwordVerifier.Verify(TestUserName, password);
+            var isVerified = _credentialVerifier.Verify(TestUserName, password);
 
             Assert.That(isVerified, Is.True);
         }
@@ -38,7 +38,7 @@ namespace OneTimePassword.Tests.Functional
         {
             var password = _passwordGenerator.Generate(TestUserName);
             Thread.Sleep(6* 1000);
-            var isVerified = _passwordVerifier.Verify(TestUserName, password);
+            var isVerified = _credentialVerifier.Verify(TestUserName, password);
 
             Assert.That(isVerified, Is.False);
         }

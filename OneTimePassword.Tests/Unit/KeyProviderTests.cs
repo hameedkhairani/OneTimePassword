@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Configuration;
 using NUnit.Framework;
-using OneTimePassword.App.Contracts;
-using OneTimePassword.App.Domain;
+using OneTimePassword.Contracts;
+using OneTimePassword.Domain;
 
 namespace OneTimePassword.Tests.Unit
 {

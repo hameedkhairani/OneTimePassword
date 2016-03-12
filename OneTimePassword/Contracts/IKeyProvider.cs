@@ -1,4 +1,4 @@
-﻿namespace OneTimePassword.App.Contracts
+﻿namespace OneTimePassword.Contracts
 {
     public interface IKeyProvider
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
-using OneTimePassword.App.Contracts;
-using OneTimePassword.App.Domain;
+using OneTimePassword.Contracts;
+using OneTimePassword.Domain;
 
 namespace OneTimePassword.App
 {
@@ -12,7 +12,7 @@ namespace OneTimePassword.App
 
         private static IHashGenerator _hashGenerator;
         private static IPasswordGenerator _passwordGenerator;
-        private static IPasswordVerifier _passwordVerifier;
+        private static ICredentialVerifier _credentialVerifier;
         private static string _userName;
 
         static void Main(string[] args)
@@ -30,15 +30,15 @@ namespace OneTimePassword.App
                 var password = _passwordGenerator.Generate(_userName);
                 Console.WriteLine("UserName:{0}\nGenerated password:{1}", _userName, password);
 
-                Console.WriteLine("verifying password...");
-                var isVerified = _passwordVerifier.Verify(_userName, password);
+                Console.WriteLine("verifying credentials...");
+                var isVerified = _credentialVerifier.Verify(_userName, password);
                 Console.WriteLine("Password verified:{0}", isVerified);
 
                 Console.WriteLine("waiting till passowrd expires...");
                 Thread.Sleep(1000*35);
 
-                Console.WriteLine("verifying same password again...");
-                isVerified = _passwordVerifier.Verify(_userName, password);
+                Console.WriteLine("verifying same credentials again...");
+                isVerified = _credentialVerifier.Verify(_userName, password);
                 Console.WriteLine("Password verified:{0}", isVerified);
 
                 Console.WriteLine("press a key to exit...");
@@ -60,8 +60,8 @@ namespace OneTimePassword.App
             _keyProvider = new AppConfigKeyProvider();
             _expiryProvider = new AppConfigExpiryProvider();
             _hashGenerator = new HmacSha1HashGenerator();
-            _passwordGenerator = new OneTimePasswordGenerator(_keyProvider, _expiryProvider, _hashGenerator);
-            _passwordVerifier = new OneTimePasswordVerifier(_passwordGenerator);
+            _passwordGenerator = new TimeBasedPasswordGenerator(_keyProvider, _expiryProvider, _hashGenerator);
+            _credentialVerifier = new CredentialVerifier(_passwordGenerator);
         }
     }
 }

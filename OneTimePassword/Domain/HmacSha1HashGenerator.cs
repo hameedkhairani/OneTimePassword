@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Security.Cryptography;
 using System.Text;
-using OneTimePassword.App.Contracts;
+using OneTimePassword.Contracts;
 
-namespace OneTimePassword.App.Domain
+namespace OneTimePassword.Domain
 {
     public class HmacSha1HashGenerator : IHashGenerator
     {

@@ -1,15 +1,15 @@
 using System;
-using OneTimePassword.App.Contracts;
+using OneTimePassword.Contracts;
 
-namespace OneTimePassword.App.Domain
+namespace OneTimePassword.Domain
 {
-    public class OneTimePasswordGenerator : IPasswordGenerator
+    public class TimeBasedPasswordGenerator : IPasswordGenerator
     {
         private readonly IKeyProvider _keyProvider;
         private readonly IExpiryProvider _expiryProvider;
         private readonly IHashGenerator _hashGenerator;
 
-        public OneTimePasswordGenerator(IKeyProvider keyProvider, IExpiryProvider expiryProvider, IHashGenerator hashGenerator)
+        public TimeBasedPasswordGenerator(IKeyProvider keyProvider, IExpiryProvider expiryProvider, IHashGenerator hashGenerator)
         {
             _keyProvider = keyProvider;
             _expiryProvider = expiryProvider;

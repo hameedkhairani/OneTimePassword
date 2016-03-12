@@ -1,8 +1,8 @@
 ﻿using System;
 using Moq;
 using NUnit.Framework;
-using OneTimePassword.App.Contracts;
-using OneTimePassword.App.Domain;
+using OneTimePassword.Contracts;
+using OneTimePassword.Domain;
 
 namespace OneTimePassword.Tests.Unit
 {
@@ -23,7 +23,7 @@ namespace OneTimePassword.Tests.Unit
             _mockKeyProvider = new Mock<IKeyProvider>();
             _mockExpiryProvider = new Mock<IExpiryProvider>();
             _mockHashGenerator = new Mock<IHashGenerator>();
-            _passwordGenerator = new OneTimePasswordGenerator(_mockKeyProvider.Object, _mockExpiryProvider.Object, _mockHashGenerator.Object);
+            _passwordGenerator = new TimeBasedPasswordGenerator(_mockKeyProvider.Object, _mockExpiryProvider.Object, _mockHashGenerator.Object);
         }
 
 
