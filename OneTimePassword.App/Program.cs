@@ -7,6 +7,7 @@ namespace OneTimePassword.App
 {
     public class Program
     {
+        private static ITimeProvider _timeProvider;
         private static IKeyProvider _keyProvider;
         private static IExpiryProvider _expiryProvider;
 
@@ -57,10 +58,11 @@ namespace OneTimePassword.App
 
         private static void BootstrapDependencies()
         {
+            _timeProvider = new TimeProvider();
             _keyProvider = new AppConfigKeyProvider();
             _expiryProvider = new AppConfigExpiryProvider();
             _hashGenerator = new HmacSha1HashGenerator();
-            _passwordGenerator = new TimeBasedPasswordGenerator(_keyProvider, _expiryProvider, _hashGenerator);
+            _passwordGenerator = new TimeBasedPasswordGenerator(_keyProvider, _expiryProvider, _hashGenerator, _timeProvider);
             _credentialVerifier = new CredentialVerifier(_passwordGenerator);
         }
     }

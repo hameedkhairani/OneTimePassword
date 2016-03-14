@@ -1,4 +1,6 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
+using Moq;
 using NUnit.Framework;
 using OneTimePassword.Contracts;
 using OneTimePassword.Domain;
@@ -7,6 +9,7 @@ namespace OneTimePassword.Tests.Functional
 {
     public class PasswordExpiryTests
     {
+        private Mock<ITimeProvider> _timeProvider;
         private IKeyProvider _keyProvider;
         private IExpiryProvider _expiryProvider;
         private IHashGenerator _hashGenerator;
@@ -17,10 +20,11 @@ namespace OneTimePassword.Tests.Functional
         [SetUp]
         public void SetUp()
         {
+            _timeProvider = new Mock<ITimeProvider>();
             _keyProvider = new AppConfigKeyProvider();
             _expiryProvider = new AppConfigExpiryProvider();
             _hashGenerator = new HmacSha1HashGenerator();
-            _passwordGenerator = new TimeBasedPasswordGenerator(_keyProvider, _expiryProvider, _hashGenerator);
+            _passwordGenerator = new TimeBasedPasswordGenerator(_keyProvider, _expiryProvider, _hashGenerator, _timeProvider.Object);
             _credentialVerifier = new CredentialVerifier(_passwordGenerator);
         }
 
@@ -36,8 +40,11 @@ namespace OneTimePassword.Tests.Functional
         [Test]
         public void GivenAGeneratedPassword_WhenVerifiedAfterExpiryPeriod_ThenReturnsFalse()
         {
+            var currentTime = DateTime.UtcNow;
+            _timeProvider.Setup(p => p.GetUtcNow()).Returns(currentTime);
             var password = _passwordGenerator.Generate(TestUserName);
-            Thread.Sleep(6* 1000);
+
+            _timeProvider.Setup(p => p.GetUtcNow()).Returns(currentTime.AddSeconds(35));
             var isVerified = _credentialVerifier.Verify(TestUserName, password);
 
             Assert.That(isVerified, Is.False);

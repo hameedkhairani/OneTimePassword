@@ -9,6 +9,7 @@ namespace OneTimePassword.Tests.Unit
     public class PasswordGeneratorTests
     {
         private IPasswordGenerator _passwordGenerator;
+        private Mock<ITimeProvider> _mockTimProvider;
         private Mock<IKeyProvider> _mockKeyProvider;
         private Mock<IExpiryProvider> _mockExpiryProvider;
         private Mock<IHashGenerator> _mockHashGenerator;
@@ -20,10 +21,11 @@ namespace OneTimePassword.Tests.Unit
         [SetUp]
         public void SetUp()
         {
+            _mockTimProvider = new Mock<ITimeProvider>();
             _mockKeyProvider = new Mock<IKeyProvider>();
             _mockExpiryProvider = new Mock<IExpiryProvider>();
             _mockHashGenerator = new Mock<IHashGenerator>();
-            _passwordGenerator = new TimeBasedPasswordGenerator(_mockKeyProvider.Object, _mockExpiryProvider.Object, _mockHashGenerator.Object);
+            _passwordGenerator = new TimeBasedPasswordGenerator(_mockKeyProvider.Object, _mockExpiryProvider.Object, _mockHashGenerator.Object, _mockTimProvider.Object);
         }
 
 
